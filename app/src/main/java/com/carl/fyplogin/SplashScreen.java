@@ -62,9 +62,15 @@ public class SplashScreen extends ActionBarActivity {
                 + "SSID INTEGER,"
                 + "Sectors INTEGER)");
 
-        for (int i = 0; i < ID.length; i++)
+        for (int i = 0; i < ID.length; i++) {
             db.execSQL("INSERT INTO basestations (id, Owner, SSID, Sectors) " +
                     "VALUES ('" + ID[i] + "','" + Owner[i] + "','" + SSID[i] + "','" + Sectors[i] + "')");
+
+            Log.d("DB INSERT", "Inserted values: " + ID[i].toString());
+            Log.d("DB INSERT", "Inserted values: " +Owner[i].toString());
+            Log.d("DB INSERT", "Inserted values: " +SSID[i].toString());
+            Log.d("DB INSERT", "Inserted values: " +Sectors[i].toString());
+        }
     }
 
     public void getData() {
