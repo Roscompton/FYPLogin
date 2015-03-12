@@ -30,7 +30,7 @@ import java.io.InputStreamReader;
 public class SplashScreen extends ActionBarActivity {
 
     TextView resultView;
-    String[] s;
+    String[] ID, SSID, Owner, Sectors;
     String text;
 
     @Override
@@ -49,7 +49,7 @@ public class SplashScreen extends ActionBarActivity {
                     e.printStackTrace();
                 }
             }
-            };
+        };
         startTimer.start();
 
         getData();
@@ -57,17 +57,14 @@ public class SplashScreen extends ActionBarActivity {
         //Creating db if non existent
         SQLiteDatabase db = openOrCreateDatabase("basestations", Context.MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS  basestations ("
-        + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-        + "Owner VARCHAR,"
-        + "SSID INTEGER,"
-        + "Sectors INTEGER)");
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "Owner VARCHAR,"
+                + "SSID INTEGER,"
+                + "Sectors INTEGER)");
 
-        db.execSQL("INSERT INTO basestations (id, Owner, SSID, Sectors) " +
-                "VALUES('"+s[0] +s[1] +s[2] +s[3]
-                          +s[4] +s[5] +s[6] +s[7]
-                          +s[8] +s[9] +s[10] +s[11]
-                          +s[12] +s[13] +s[14] +s[15]');
-
+        for (int i = 0; i < ID.length; i++)
+            db.execSQL("INSERT INTO basestations (id, Owner, SSID, Sectors) " +
+                    "VALUES ('" + ID[i] + "','" + Owner[i] + "','" + SSID[i] + "','" + Sectors[i] + "')");
     }
 
     public void getData() {
@@ -103,24 +100,15 @@ public class SplashScreen extends ActionBarActivity {
         //Parsing JSON data
         try {
             JSONArray jArray = new JSONArray(result);
-            int x = 0;
 
             for (int i = 0; i < jArray.length(); i++) { //For every JSON object
                 JSONObject json = jArray.getJSONObject(i); //One object for every JSON object
 
 
-                s[x] ="ID: " + json.getInt("ID");
-                s[x+1]="Owner: " + json.getString("Owner");
-                s[x+2]="SSID: " + json.getInt("SSID");
-                s[x+3]="Number of sectors: "+ json.getInt("Sectors");
-                x+=4;
-              //  System.out.println(jArray.getJSONObject(i));
-
-
-
-        //    resultView.setText(s);
-        //    text = resultView.getText().toString();
-
+                ID[i] = "" +json.getInt("ID");
+                Owner[i] = "" +json.getString("Owner");
+                SSID[i] = "" +json.getInt("SSID");
+                Sectors[i] = "" + json.getInt("Sectors");
 
         }
 
