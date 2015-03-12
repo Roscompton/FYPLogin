@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SigFind</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="welcome">Welcome! You have successfully logged in.</string>
+    <string name="menuIcon">menuIcon</string>
+    <string name="SigFind">SigFind</string>
+    <string name="ShowMap">Display Map</string>
+    <string name="title_activity_map">mapActivity</string>
+
+</resources>
