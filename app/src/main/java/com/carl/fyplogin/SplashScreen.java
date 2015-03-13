@@ -35,11 +35,13 @@ import android.os.AsyncTask;
 public class SplashScreen extends Activity {
 
     TextView resultView;
-   // String[] ID, Owner, SSID, Sectors;
-    ArrayList ID = new ArrayList();
-    ArrayList Owner = new ArrayList();
-    ArrayList SSID = new ArrayList();
-    ArrayList Sectors = new ArrayList();
+
+public static ArrayList<Integer> ID = new ArrayList();
+public static ArrayList<String> Owner = new ArrayList();
+public static ArrayList<Integer> SSID = new ArrayList();
+public static ArrayList<Integer> Sectors = new ArrayList();
+public static ArrayList<Double> Latitude = new ArrayList();
+public static ArrayList<Double> Longitude = new ArrayList();
 
 
     @Override
@@ -48,6 +50,30 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_spash_screen);
 
         new PrefetchData().execute();
+    }
+
+    public static ArrayList<String> getOwner() {
+        return Owner;
+    }
+
+    public static ArrayList<Double> getLatitude() {
+        return Latitude;
+    }
+
+    public static ArrayList<Double> getLongitude() {
+        return Longitude;
+    }
+
+    public static ArrayList<Integer> getSSID() {
+        return SSID;
+    }
+
+    public static ArrayList<Integer> getID() {
+        return ID;
+    }
+
+    public static ArrayList<Integer> getSectors() {
+        return Sectors;
     }
 
     private class PrefetchData extends AsyncTask<Void, Void, Void> {
@@ -100,12 +126,14 @@ public class SplashScreen extends Activity {
 
                     Log.d("JSONContents", "ID for first object: " +json.getString("ID"));
 
-                    ID.add(json.getString("ID"));
+                    ID.add(Integer.parseInt(json.getString("ID")));
                     Owner.add(json.getString("Owner"));
-                    SSID.add(json.getString("SSID"));
-                    Sectors.add(json.getString("Sectors"));
+                    SSID.add(Integer.parseInt(json.getString("SSID")));
+                    Sectors.add(Integer.parseInt(json.getString("Sectors")));
+                    Latitude.add(Double.parseDouble(json.getString("Latitude")));
+                    Longitude.add(Double.parseDouble(json.getString("Longitude")));
 
-                    Log.d("Parsing JSON to arrays", "Param: " +ID.get(i));
+                    Log.d("Parsing JSON to arrays", "Param: " +Latitude.get(i));
                 }
 
 
@@ -114,23 +142,37 @@ public class SplashScreen extends Activity {
             }
 
 
+
+
             //Creating db if non existent
             SQLiteDatabase db = openOrCreateDatabase("basestations", Context.MODE_PRIVATE, null);
+
+            db.execSQL("DROP TABLE IF EXISTS basestations");
             db.execSQL("CREATE TABLE IF NOT EXISTS  basestations ("
-                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "ID INTEGER PRIMARY KEY,"
                     + "Owner VARCHAR,"
                     + "SSID INTEGER,"
-                    + "Sectors INTEGER)");
+                    + "Sectors INTEGER,"
+                    + "Latitude DOUBLE,"
+                    + "Longitude DOUBLE)");
 
-            for (int i = 0; i < ID.size(); i++) {
-                db.execSQL("INSERT INTO basestations (id, Owner, SSID, Sectors) " +
-                        "VALUES ('" + ID.get(i) + "','" + Owner.get(i) + "','" + SSID.get(i) + "','" + Sectors.get(i) + "')");
 
-                Log.d("DB INSERT", "Inserted values: " + ID.get(i));
-                Log.d("DB INSERT", "Inserted values: " +Owner.get(i));
-                Log.d("DB INSERT", "Inserted values: " +SSID.get(i));
-                Log.d("DB INSERT", "Inserted values: " +Sectors.get(i));
-            }
+
+
+                for (int i = 0; i < ID.size(); i++) {
+                    db.execSQL("INSERT INTO basestations (id, Owner, SSID, Sectors, Latitude, Longitude) " +
+                            "VALUES ('" + ID.get(i) + "','" + Owner.get(i) + "','" + SSID.get(i) + "','"
+                            + Sectors.get(i) + "','" +Latitude.get(i) + "','" + Longitude.get(i)+"')");
+
+                    Log.d("DB INSERT", "Inserted values: " + ID.get(i));
+                    Log.d("DB INSERT", "Inserted values: " + Owner.get(i));
+                    Log.d("DB INSERT", "Inserted values: " + SSID.get(i));
+                    Log.d("DB INSERT", "Inserted values: " + Sectors.get(i));
+                    Log.d("DB INSERT", "Inserted values: " + Latitude.get(i));
+                    Log.d("DB INSERT", "Inserted values: " + Longitude.get(i));
+                }
+
+
 
             return null;
     }

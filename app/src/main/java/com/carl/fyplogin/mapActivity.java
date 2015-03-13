@@ -2,6 +2,8 @@ package com.carl.fyplogin;
 
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -12,32 +14,24 @@ import android.view.Menu;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import com.carl.fyplogin.JSONParser;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
-public class mapActivity extends FragmentActivity {
+public class mapActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener {
 
-    private static final String TAG_SSID = "SSID: ";
-    private static final String TAG_ID = "ID: ";
-    private static final String TAG_SECTORS = "Number of Sectors: ";
-    private static String url = "http://danu6.it.nuigalway.ie/wbbsl/listview.php/";
-    private GoogleMap mMap;
-    ListView list;
-    TextView SSID;
-    TextView ID;
-    TextView Sectors;
 
+private GoogleMap mMap;
 
 
     @Override
@@ -45,6 +39,9 @@ public class mapActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         setUpMapIfNeeded();
+
+
+
 
         if(mMap != null) {
             mMap.setMyLocationEnabled(true);
@@ -72,9 +69,7 @@ public class mapActivity extends FragmentActivity {
     }
 
     private void setUpMap() {
-            mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(53.2719, -9.0489))
-                .title("Wireless Base Station"));
+
         UiSettings mapSettings;
         mapSettings = mMap.getUiSettings();
         mapSettings.setZoomControlsEnabled(true);
@@ -95,7 +90,44 @@ public class mapActivity extends FragmentActivity {
         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(myCoordinates, 12);
         mMap.animateCamera(yourLocation);
 
+        markerSetup();
+
        double distanceToMarker = getDistance(latitude,longitude);
+
+
+        mMap.setOnMarkerClickListener(this);
+
+    }
+
+
+    private void markerSetup() {
+
+        ArrayList<Double> getLat, getLng;
+        ArrayList<String> getOwner;
+        ArrayList<Integer> getID, getSSID, getSectors;
+        getLat = SplashScreen.getLatitude();
+        getLng = SplashScreen.getLongitude();
+        getID = SplashScreen.getID();
+        getOwner = SplashScreen.getOwner();
+        getSectors = SplashScreen.getSectors();
+        getSSID = SplashScreen.getSSID();
+
+        for(int i=0; i<getLat.size();i++) {
+
+            mMap.addMarker(new MarkerOptions()
+            .position(new LatLng(getLat.get(i), getLng.get(i)))
+            .title("ID: " + getID.get(i))
+            .snippet("SSID: " + getSSID.get(i) + "\nOwner: " + getOwner.get(i) + "\nSectors: " + getSectors.get(i)));
+
+
+        }
+
+
+    }
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+       return false;
     }
 
     private double getDistance(double lat2, double lng2) {
@@ -124,9 +156,6 @@ public class mapActivity extends FragmentActivity {
     }
 
 
-    public void populateList() {
-
-
-    }
 
    }
+
