@@ -127,6 +127,8 @@ private GoogleMap mMap;
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
+       TextView markerDetails = (TextView) findViewById(R.id.list);
+        markerDetails.setText("Marker ID: " +marker.getId());
        return false;
     }
 
